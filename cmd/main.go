@@ -2,14 +2,11 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -29,7 +26,7 @@ const (
 )
 
 type GoogleConfig struct {
-	sheetsService  *sheets.Service
+	sheetsService *sheets.Service
 	spreadsheetId string
 	useApiKey     bool
 }
@@ -56,7 +53,7 @@ func main() {
 	fmt.Println("\nChoose export option:")
 	fmt.Println("1. Export to local folder")
 	fmt.Println("2. Export to Google Sheets")
-	
+
 	var choice string
 	fmt.Print("Enter your choice (1 or 2): ")
 	choice, _ = reader.ReadString('\n')
@@ -81,7 +78,7 @@ func main() {
 		fmt.Println("\nChoose authentication method:")
 		fmt.Println("1. API Key")
 		fmt.Println("2. Service Account Credentials")
-		
+
 		var authChoice string
 		fmt.Print("Enter your choice (1 or 2): ")
 		authChoice, _ = reader.ReadString('\n')
@@ -108,7 +105,7 @@ func main() {
 			fmt.Printf("Error setting up Google Sheets: %v\n", err)
 			return
 		}
-		
+
 		fmt.Print("Enter spreadsheet ID (or leave empty to create new): ")
 		googleConfig.spreadsheetId, _ = reader.ReadString('\n')
 		googleConfig.spreadsheetId = strings.TrimSpace(googleConfig.spreadsheetId)
@@ -129,13 +126,13 @@ func setupGoogleSheetsWithApiKey(apiKey string) (*GoogleConfig, error) {
 
 	return &GoogleConfig{
 		sheetsService: srv,
-		useApiKey:    true,
+		useApiKey:     true,
 	}, nil
 }
 
 func setupGoogleSheetsWithCredentials(credentialsPath string) (*GoogleConfig, error) {
 	ctx := context.Background()
-	
+
 	b, err := ioutil.ReadFile(credentialsPath)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read credentials file: %v", err)
@@ -147,7 +144,7 @@ func setupGoogleSheetsWithCredentials(credentialsPath string) (*GoogleConfig, er
 	}
 
 	client := config.Client(ctx)
-	
+
 	srv, err := sheets.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		return nil, fmt.Errorf("unable to create sheets service: %v", err)
@@ -155,7 +152,7 @@ func setupGoogleSheetsWithCredentials(credentialsPath string) (*GoogleConfig, er
 
 	return &GoogleConfig{
 		sheetsService: srv,
-		useApiKey:    false,
+		useApiKey:     false,
 	}, nil
 }
 
@@ -179,7 +176,7 @@ func processFiles(ctx context.Context, srcFolder, dstFolder string, exportOption
 		}
 
 		srcPath := filepath.Join(srcFolder, file.Name())
-		
+
 		switch exportOption {
 		case LocalFolder:
 			dstPath := filepath.Join(dstFolder, strings.TrimSuffix(file.Name(), filepath.Ext(file.Name()))+".txt")
@@ -223,7 +220,7 @@ func exportToGoogleSheets(srcPath, fileName string, config *GoogleConfig) error 
 				Title: "Hex to ASCII Conversion",
 			},
 		}
-		
+
 		resp, err := config.sheetsService.Spreadsheets.Create(spreadsheet).Do()
 		if err != nil {
 			return fmt.Errorf("unable to create spreadsheet: %v", err)
