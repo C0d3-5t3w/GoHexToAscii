@@ -1,6 +1,6 @@
 # GoHexToAscii
 
-* Converts hex files in a selected folder and puts the plain text ascii files in a desired folder.
+* Converts hex files in a selected folder and puts the plain text ascii files in a desired folder or google sheets.
 
 # How to:
 
