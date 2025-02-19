@@ -4,7 +4,7 @@
 
 # How to:
 
-* sudo git clone ""
+* sudo git clone "https://github.com/C0d3-5t3w/GoHexToAscii.git"
 
 * cd GoHexToAscii
 
@@ -13,3 +13,5 @@
 * sudo chmod +x GoHexToAscii
 
 * sudo ./GoHexToAscii
+
+
